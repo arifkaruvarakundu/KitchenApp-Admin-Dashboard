@@ -8,6 +8,11 @@ import Products from "./pages/Products";
 import Categories from "./pages/Categories";
 import Users from "./pages/Users";
 import Orders from "./pages/Orders";
+import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
+import CreateCategory from "./pages/CreateCategory";
+import EditCategory from "./pages/EditCategory";
+import EditOrder from "./pages/EditOrder";
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -23,6 +28,12 @@ const App = () => {
             <Route path="/categories" element={<Categories />}/>
             <Route path="/users" element={<Users />}/>
             <Route path="/orders" element={<Orders />}/>
+            <Route path="/products/create-product" element={<CreateProduct />} />
+            <Route path="/edit-product/:id" element={<EditProduct />} />
+            <Route path="/categories/create-category" element={<CreateCategory />} />
+            <Route path="/edit-category/:id" element={<EditCategory />} />
+            <Route path="/edit-order/:id" element={<EditOrder />} />
+            {/* Redirect to landing page if no match */}
           </Routes>
         </Router>
       </div>

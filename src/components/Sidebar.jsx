@@ -160,7 +160,7 @@ const Sidebar = () => {
           )}
         </div>
 
-        <div className="absolute bottom-0 border-1 border-t dark:border-blackSecondary border-blackSecondary w-full">
+        {/* <div className="absolute bottom-0 border-1 border-t dark:border-blackSecondary border-blackSecondary w-full">
           <NavLink
             to="/help-desk"
             className={({ isActive }) =>
@@ -170,7 +170,7 @@ const Sidebar = () => {
             <HiOutlineInformationCircle className="text-xl" />
             <span className="text-lg">Help Desk</span>
           </NavLink>
-        </div>
+        </div> */}
       </div>
     </div>
   );

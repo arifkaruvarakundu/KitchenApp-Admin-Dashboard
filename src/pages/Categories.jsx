@@ -26,10 +26,10 @@ const Categories = () => {
 
             {/* Buttons */}
             <div className="flex gap-x-2 max-[370px]:flex-col max-[370px]:gap-2 max-[370px]:items-center">
-              <button className="border border-gray-600 w-32 py-2 text-lg hover:border-gray-500 duration-200 flex items-center justify-center gap-x-2 dark:bg-blackPrimary bg-whiteSecondary">
+              {/* <button className="border border-gray-600 w-32 py-2 text-lg hover:border-gray-500 duration-200 flex items-center justify-center gap-x-2 dark:bg-blackPrimary bg-whiteSecondary">
                 <AiOutlineExport className="text-base dark:text-whiteSecondary text-blackPrimary" />
                 <span className="font-medium dark:text-whiteSecondary text-blackPrimary">Export</span>
-              </button>
+              </button> */}
 
               <WhiteButton
                 link="/categories/create-category"

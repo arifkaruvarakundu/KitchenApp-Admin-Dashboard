@@ -107,14 +107,17 @@ const OrderTable = () => {
               <div className="flex gap-x-3">
                 <div
                   className={`text-sm leading-6 py-1 px-2 ${
-                    item.status === "Completed" &&
+                    item.status === "Order Confirmed" &&
                     "dark:bg-green-900 bg-green-700 text-whiteSecondary font-semibold"
                   } ${
-                    item.status === "On hold" &&
+                    item.status === "Out for Delivery" &&
                     "dark:bg-yellow-900 bg-yellow-700 text-whiteSecondary font-semibold"
                   } ${
                     item.status === "Cancelled" &&
                     "dark:bg-red-900 bg-red-700 text-whiteSecondary font-semibold"
+                  } ${
+                    item.status === "Delivered" &&
+                    "dark:bg-gray-900 bg-gray-700 text-whiteSecondary font-semibold"
                   } ${
                     item.status === "Pending" &&
                     "dark:bg-blue-900 bg-blue-700 text-whiteSecondary font-semibold"
@@ -137,17 +140,17 @@ const OrderTable = () => {
             <td className="py-4 pl-0 pr-4 text-right text-sm leading-6 dark:text-whiteSecondary text-blackPrimary table-cell pr-6 lg:pr-8">
               <div className="flex gap-x-1 justify-end">
                 <Link
-                  to="/orders/1"
+                  to={`/edit-order/${item.id}`}
                   className="dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
                 </Link>
-                <Link
+                {/* <Link
                   to="/orders/1"
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
                 >
                   <HiOutlineEye className="text-lg" />
-                </Link>
+                </Link> */}
                 <Link
                   to="#"
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"

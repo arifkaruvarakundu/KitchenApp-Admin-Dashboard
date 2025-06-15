@@ -14,6 +14,32 @@ const outOfStockClass =
 const ProductTable = () => {
   const [products, setProducts] = useState([]);
 
+    const confirmDelete = async (productId) => {
+      if (window.confirm("Are you sure you want to delete this product?")) {
+        await handleDeleteProduct(productId); // 🔧 Add await here
+      }
+    };
+
+    const handleDeleteProduct = async (productId) => {
+      try {
+        await axios.delete(`${API_BASE_URL}/deleteproduct/${productId}/`);
+        alert("Product deleted successfully!");
+
+        // ❗ Remove the deleted product from the state
+        setProducts((prevProducts) =>
+          prevProducts.filter((product) => product.id !== productId)
+        );
+
+        // Don't navigate if you're already on the list
+        // navigate("/products"); // optional, only use if not on /products
+        return true;
+      } catch (err) {
+        console.error("Failed to delete product", err);
+        alert("Failed to delete product");
+        return false;
+      }
+    };
+
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/products/`)
@@ -92,23 +118,23 @@ const ProductTable = () => {
             <td className="py-4 pl-0 pr-4 text-right text-sm leading-6 dark:text-whiteSecondary text-blackPrimary table-cell pr-6 lg:pr-8">
               <div className="flex gap-x-1 justify-end">
                 <Link
-                  to={`/products/${item.id}`}
+                  to={`/edit-product/${item.id}`}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
                 </Link>
-                <Link
+                {/* <Link
                   to={`/products/${item.id}`}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlineEye className="text-lg" />
-                </Link>
-                <Link
-                  to="#"
+                </Link> */}
+                <button
+                  onClick={() => confirmDelete(item.id)}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlineTrash className="text-lg" />
-                </Link>
+                </button>
               </div>
             </td>
           </tr>

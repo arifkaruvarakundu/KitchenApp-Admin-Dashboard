@@ -19,16 +19,32 @@ const CategoryTable = () => {
 
     const [categories, setCategories] = useState([]);
     useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/categories/`)
-      .then((response) => {
-        console.log("category data fetched successfully:", response.data);
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching product data:", error);
-      });
-  }, []);
+      axios
+        .get(`${API_BASE_URL}/categories/`)
+        .then((response) => {
+          console.log("category data fetched successfully:", response.data);
+          setCategories(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching product data:", error);
+        });
+    }, []);
+
+      const deleteCategory = async (categoryId) => {
+        if (!window.confirm("Are you sure you want to delete this category?")) return;
+
+        try {
+          const response = await axios.delete(`${API_BASE_URL}/deletecategory/${categoryId}/`);
+          alert("Category deleted successfully.");
+          // ❗ Remove the deleted category from the state
+        setCategories((prevCategories) =>
+          prevCategories.filter((category) => category.id !== categoryId)
+        );
+          // Optionally refresh the list or redirect
+        } catch (error) {
+          alert(error.response?.data?.detail || "Failed to delete category.");
+        }
+      };
 
   return (
     <table className="mt-6 w-full whitespace-nowrap text-left max-lg:block max-lg:overflow-x-scroll">
@@ -89,23 +105,24 @@ const CategoryTable = () => {
             <td className="py-4 pl-0 pr-4 text-right text-sm leading-6 dark:text-whiteSecondary text-blackPrimary table-cell pr-6 lg:pr-8">
               <div className="flex gap-x-1 justify-end">
                 <Link
-                  to="/categories/1"
+                  to={`/edit-category/${item.id}`}
                   className="dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center hover:border-gray-500"
                 >
                   <HiOutlinePencil className="text-lg" />
                 </Link>
-                <Link
+                {/* <Link
                   to="/categories/1"
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center hover:border-gray-500"
                 >
                   <HiOutlineEye className="text-lg" />
-                </Link>
-                <Link
-                  to="#"
+                </Link> */}
+                <button
+                  key={item.id}
+                  onClick={() => deleteCategory(item.id)}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center hover:border-gray-500"
                 >
                   <HiOutlineTrash className="text-lg" />
-                </Link>
+                </button>
               </div>
             </td>
           </tr>

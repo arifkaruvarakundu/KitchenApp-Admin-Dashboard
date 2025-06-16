@@ -27,7 +27,7 @@ const EditProduct = () => {
     use_and_care: "",
     use_and_care_ar: "",
     category: "",
-    is_available: false,
+    is_active: true,
     is_default: false,
     price: "",
     stock: ""
@@ -106,8 +106,6 @@ const EditProduct = () => {
         })),
         {
           brand: "",
-          weight: "",
-          liter: "",
           price: "",
           stock: "",
           discount_percentage: "",
@@ -168,8 +166,10 @@ const EditProduct = () => {
       for (let key in cleanedData) {
         if (cleanedData[key] !== undefined && cleanedData[key] !== null) {
           formData.append(key, cleanedData[key]);
+          
         }
       }
+      formData.append("is_active", productData.is_active ? "true" : "false");
 
       // ✅ Use correct key for deleted images
       const cleanVariants = variants.map((variant) => ({
@@ -312,6 +312,17 @@ const EditProduct = () => {
                 onChange={(e) => setProductData({ ...productData, use_and_care_ar: e.target.value })}
               />
             </InputWithLabel>
+
+            <div className="flex items-center gap-3 text-lg dark:text-whiteSecondary text-blackPrimary">
+                    <input
+                        type="checkbox"
+                        checked={productData.is_active}
+                        onChange={(e) =>
+                        setProductData({ ...productData, is_active: e.target.checked })
+                        }
+                    />
+                    Is Active
+                    </div>
 
             <InputWithLabel label="Category">
               <SelectInput

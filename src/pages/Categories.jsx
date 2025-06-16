@@ -2,8 +2,19 @@ import { CategoryTable, Pagination, RowsPerPage, Sidebar, WhiteButton } from "..
 import { HiOutlinePlus, HiOutlineChevronRight, HiOutlineSearch } from "react-icons/hi";
 import { AiOutlineExport } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import {useState, useEffect} from "react";
 
 const Categories = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("default");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+      setCurrentPage(1);
+    }, [searchQuery, rowsPerPage]);
+
   return (
     <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
       <Sidebar />
@@ -50,6 +61,8 @@ const Categories = () => {
               <HiOutlineSearch className="absolute top-3 left-3 text-gray-400 text-lg" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search categories..."
                 className="w-60 h-10 border border-gray-600 indent-10 outline-0 dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary dark:focus:border-gray-500 focus:border-gray-400"
               />
@@ -59,23 +72,39 @@ const Categories = () => {
             <select
               name="sort"
               id="sort"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
               className="w-60 h-10 pl-3 pr-8 cursor-pointer outline-0 border border-gray-600 bg-whiteSecondary dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary dark:hover:border-gray-500 hover:border-gray-400"
             >
               <option value="default">Sort by</option>
               <option value="az">A-Z</option>
               <option value="za">Z-A</option>
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
+              {/* <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option> */}
             </select>
           </div>
 
           {/* Category Table */}
-          <CategoryTable />
+          <CategoryTable
+            searchQuery={searchQuery} 
+            sortOption={sortOption} 
+            rowsPerPage={rowsPerPage}
+            currentPage={currentPage}
+            setTotalItems={setTotalItems}
+          />
 
           {/* Pagination and Rows Per Page */}
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
-            <RowsPerPage />
-            <Pagination />
+            <RowsPerPage
+              rowsPerPage={rowsPerPage} 
+              setRowsPerPage={setRowsPerPage} 
+            />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              setTotalItems={setTotalItems}
+              rowsPerPage={rowsPerPage}
+            />
           </div>
         </div>
       </div>

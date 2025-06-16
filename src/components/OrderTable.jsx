@@ -17,7 +17,7 @@ import { HiOutlineEye } from "react-icons/hi";
 import axios from 'axios';
 import API_BASE_URL from "../../api_config";
 
-const OrderTable = () => {
+const OrderTable = ({ statusFilter, sortOption, rowsPerPage, currentPage, setTotalItems }) => {
 
     const [orders, setOrders] = useState([]);
 
@@ -32,6 +32,28 @@ const OrderTable = () => {
         console.error("Error fetching product data:", error);
       });
   }, []);
+
+  const filteredOrders = orders.filter((order) =>
+    statusFilter === "All" ? true : order.status === statusFilter
+  );
+
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
+  if (sortOption === "newest") {
+    return new Date(b.created_at) - new Date(a.created_at);
+  } else if (sortOption === "oldest") {
+    return new Date(a.created_at) - new Date(b.created_at);
+  } else {
+    return 0; // No sorting
+  }
+});
+
+const startIdx = (currentPage - 1) * rowsPerPage;
+const endIdx = startIdx + rowsPerPage;
+const paginatedOrders = sortedOrders.slice(startIdx, endIdx);
+
+useEffect(() => {
+  setTotalItems(sortedOrders.length);
+}, [sortedOrders, setTotalItems]);
 
   return (
     <table className="mt-6 w-full whitespace-nowrap text-left max-lg:block max-lg:overflow-x-scroll">
@@ -77,7 +99,14 @@ const OrderTable = () => {
         </tr>
       </thead>
       <tbody className="divide-y divide-white/5">
-        {orders.map((item) => (
+      {paginatedOrders.length === 0 ? (
+        <tr>
+          <td colSpan="5" className="text-center py-6 text-gray-500">
+            No orders match your filter.
+          </td>
+        </tr>
+      ) : (
+        paginatedOrders.map((item) => (
           <tr key={nanoid()}>
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
               <div className="flex items-center gap-x-4">
@@ -160,7 +189,7 @@ const OrderTable = () => {
               </div>
             </td>
           </tr>
-        ))}
+        )))}
       </tbody>
     </table>
   );

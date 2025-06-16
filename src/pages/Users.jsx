@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   HiOutlineChevronRight,
   HiOutlinePlus,
@@ -14,6 +15,17 @@ import {
 } from "../components";
 
 const Users = () => {
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("default");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, rowsPerPage]);
+
   return (
     <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
       <Sidebar />
@@ -39,7 +51,7 @@ const Users = () => {
                   Export
                 </span>
               </button> */}
-              <WhiteButton
+              {/* <WhiteButton
                 link="/users/create-user"
                 text="Add a user"
                 textSize="lg"
@@ -47,7 +59,7 @@ const Users = () => {
                 width="48"
               >
                 <HiOutlinePlus className="dark:text-blackPrimary text-whiteSecondary" />
-              </WhiteButton>
+              </WhiteButton> */}
             </div>
           </div>
 
@@ -57,6 +69,8 @@ const Users = () => {
               <HiOutlineSearch className="text-gray-400 text-lg absolute top-3 left-3" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-60 h-10 border dark:bg-blackPrimary bg-white border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 indent-10 dark:focus:border-gray-500 focus:border-gray-400"
                 placeholder="Search users..."
               />
@@ -66,23 +80,39 @@ const Users = () => {
                 className="w-60 h-10 dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 pl-3 pr-8 cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
                 name="sort"
                 id="sort"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
               >
                 <option value="default">Sort by</option>
                 <option value="az">A-Z</option>
                 <option value="za">Z-A</option>
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
+                {/* <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option> */}
               </select>
             </div>
           </div>
 
           {/* Table */}
-          <UserTable />
+          <UserTable
+            searchQuery={searchQuery} 
+             sortOption={sortOption} 
+             rowsPerPage={rowsPerPage}
+             currentPage={currentPage}
+             setTotalItems={setTotalItems}
+          />
 
           {/* Pagination */}
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
-            <RowsPerPage />
-            <Pagination />
+            <RowsPerPage
+              rowsPerPage={rowsPerPage} 
+              setRowsPerPage={setRowsPerPage}
+            />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              setTotalItems={setTotalItems}
+              rowsPerPage={rowsPerPage}
+            />
           </div>
         </div>
       </div>

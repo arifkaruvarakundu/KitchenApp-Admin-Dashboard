@@ -13,6 +13,9 @@ import EditProduct from "./pages/EditProduct";
 import CreateCategory from "./pages/CreateCategory";
 import EditCategory from "./pages/EditCategory";
 import EditOrder from "./pages/EditOrder";
+import EditUser from "./pages/EditUser";
+import SignIn from "./pages/SignIn";
+import RegisterAdmin from "./pages/Register";
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -23,7 +26,8 @@ const App = () => {
       <div>
         <Router>
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<SignIn />} />
+            <Route path="/dashboard" element={<Landing />} />
             <Route path="/products" element={<Products />} />
             <Route path="/categories" element={<Categories />}/>
             <Route path="/users" element={<Users />}/>
@@ -33,6 +37,8 @@ const App = () => {
             <Route path="/categories/create-category" element={<CreateCategory />} />
             <Route path="/edit-category/:id" element={<EditCategory />} />
             <Route path="/edit-order/:id" element={<EditOrder />} />
+            <Route path="/edit-user/:id" element={<EditUser />} />
+            <Route path="/register" element={<RegisterAdmin/>} />
             {/* Redirect to landing page if no match */}
           </Routes>
         </Router>

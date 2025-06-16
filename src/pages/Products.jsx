@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { 
     Pagination, 
     ProductTable, 
@@ -12,6 +13,19 @@ import { HiOutlineSearch } from "react-icons/hi";
 
 
 const Products = () => {
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("default");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, rowsPerPage]);
+
+
+
   return (
     <div className="h-auto border-t dark:border-blackSecondary border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
       <Sidebar />
@@ -41,6 +55,8 @@ const Products = () => {
               <HiOutlineSearch className="text-gray-400 text-lg absolute top-3 left-3" />
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-60 h-10 border dark:bg-blackPrimary bg-white border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 indent-10 focus:border-gray-500"
                 placeholder="Search products..."
               />
@@ -50,19 +66,35 @@ const Products = () => {
                 className="w-60 h-10 dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 pl-3 pr-8 cursor-pointer hover:border-gray-500"
                 name="sort"
                 id="sort"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
               >
                 <option value="default">Sort by</option>
                 <option value="az">A-Z</option>
                 <option value="za">Z-A</option>
-                <option value="newest">Newest</option>
-                <option value="oldest">Oldest</option>
+                {/* <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option> */}
               </select>
             </div>
           </div>
-          <ProductTable />
+          <ProductTable 
+             searchQuery={searchQuery} 
+             sortOption={sortOption} 
+             rowsPerPage={rowsPerPage}
+             currentPage={currentPage}
+             setTotalItems={setTotalItems}
+             />
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
-            <RowsPerPage />
-            <Pagination />
+            <RowsPerPage
+              rowsPerPage={rowsPerPage} 
+              setRowsPerPage={setRowsPerPage} 
+            />
+            <Pagination
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              setTotalItems={setTotalItems}
+              rowsPerPage={rowsPerPage}
+            />
           </div>
         </div>
       </div>

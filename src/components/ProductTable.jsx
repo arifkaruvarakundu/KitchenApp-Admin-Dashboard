@@ -11,7 +11,7 @@ const inStockClass =
 const outOfStockClass =
   "text-rose-400 bg-rose-400/10 flex-none rounded-full p-1";
 
-const ProductTable = () => {
+const ProductTable = ({ searchQuery, sortOption, rowsPerPage, currentPage, setTotalItems }) => {
   const [products, setProducts] = useState([]);
 
     const confirmDelete = async (productId) => {
@@ -52,6 +52,33 @@ const ProductTable = () => {
       });
   }, []);
 
+   // Filter products based on search query
+  const filteredProducts = products.filter((product) =>
+  product?.product_name?.toLowerCase().includes(searchQuery?.toLowerCase() || "")
+);
+
+const sortedProducts = [...filteredProducts].sort((a, b) => {
+  if (sortOption === "az") {
+    return a.product_name.localeCompare(b.product_name);
+  } else if (sortOption === "za") {
+    return b.product_name.localeCompare(a.product_name);
+  } else if (sortOption === "newest") {
+    return new Date(b.created_at) - new Date(a.created_at);
+  } else if (sortOption === "oldest") {
+    return new Date(a.created_at) - new Date(b.created_at);
+  } else {
+    return 0; // No sorting
+  }
+});
+
+const startIdx = (currentPage - 1) * rowsPerPage;
+const endIdx = startIdx + rowsPerPage;
+const paginatedProducts = sortedProducts.slice(startIdx, endIdx);
+
+useEffect(() => {
+  setTotalItems(sortedProducts.length);
+}, [sortedProducts, setTotalItems]);
+
   return (
     <table className="mt-6 w-full whitespace-nowrap text-left max-lg:block max-lg:overflow-x-scroll">
       <colgroup>
@@ -77,7 +104,14 @@ const ProductTable = () => {
         </tr>
       </thead>
       <tbody className="divide-y divide-white/5">
-        {products.map((item) => (
+      {paginatedProducts.length === 0 ? (
+        <tr>
+          <td colSpan="5" className="text-center py-6 text-gray-500">
+            No products match your search.
+          </td>
+        </tr>
+      ) : (
+        paginatedProducts.map((item) => (
           <tr key={nanoid()}>
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
               <div className="flex items-center gap-x-4">
@@ -108,7 +142,7 @@ const ProductTable = () => {
                   <div className="h-1.5 w-1.5 rounded-full bg-current" />
                 </div>
                 <div className="dark:text-whiteSecondary text-blackPrimary block">
-                  {item.status}
+                  {item.is_active ? "Active" : "InActive"}
                 </div>
               </div>
             </td>
@@ -138,7 +172,8 @@ const ProductTable = () => {
               </div>
             </td>
           </tr>
-        ))}
+        ))
+)}
       </tbody>
     </table>
   );

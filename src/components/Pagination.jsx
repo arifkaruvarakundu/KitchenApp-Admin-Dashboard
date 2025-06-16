@@ -1,16 +1,16 @@
 import { useState } from 'react';
 
-const Pagination = () => {
-  const totalPages = 10; // Total number of pages
-  const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({ currentPage, setCurrentPage, totalItems, rowsPerPage }) => {
+  const totalPages = Math.ceil(totalItems / rowsPerPage);
 
-  // Calculate the range of page numbers to display
+  if (totalPages <= 1) return null; // hide if only 1 page
+
   let startPage = currentPage - 1;
   if (startPage <= 0) startPage = 1;
   let endPage = startPage + 2;
   if (endPage > totalPages) {
     endPage = totalPages;
-    startPage = totalPages - 2 > 0 ? totalPages - 2 : 1;
+    startPage = Math.max(1, totalPages - 2);
   }
 
   const pageNumbers = [];

@@ -15,7 +15,7 @@ import axios from 'axios';
 import API_BASE_URL from "../../api_config";
 // import { getCloudinaryUrl } from '../utils/cloudinary';
 
-const CategoryTable = () => {
+const CategoryTable = ({searchQuery, sortOption, rowsPerPage, currentPage, setTotalItems}) => {
 
     const [categories, setCategories] = useState([]);
     useEffect(() => {
@@ -46,6 +46,33 @@ const CategoryTable = () => {
         }
       };
 
+       // Filter products based on search query
+  const filteredCategories = categories.filter((category) =>
+  category?.category_name?.toLowerCase().includes(searchQuery?.toLowerCase() || "")
+);
+
+const sortedCategories = [...filteredCategories].sort((a, b) => {
+  if (sortOption === "az") {
+    return a.category_name.localeCompare(b.category_name);
+  } else if (sortOption === "za") {
+    return b.category_name.localeCompare(a.category_name);
+  } else if (sortOption === "newest") {
+    return new Date(b.created_at) - new Date(a.created_at);
+  } else if (sortOption === "oldest") {
+    return new Date(a.created_at) - new Date(b.created_at);
+  } else {
+    return 0; // No sorting
+  }
+});
+
+const startIdx = (currentPage - 1) * rowsPerPage;
+const endIdx = startIdx + rowsPerPage;
+const paginatedOrders = sortedCategories.slice(startIdx, endIdx);
+
+useEffect(() => {
+  setTotalItems(sortedCategories.length);
+}, [sortedCategories, setTotalItems]);
+
   return (
     <table className="mt-6 w-full whitespace-nowrap text-left max-lg:block max-lg:overflow-x-scroll">
       <colgroup>
@@ -67,7 +94,14 @@ const CategoryTable = () => {
       </thead>
 
       <tbody className="divide-y divide-white/5">
-        {categories.map((item) => (
+      {paginatedOrders.length === 0 ? (
+        <tr>
+          <td colSpan="5" className="text-center py-6 text-gray-500">
+            No categories match your search.
+          </td>
+        </tr>
+      ) : (
+        paginatedOrders.map((item) => (
           <tr key={nanoid()}>
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
               <div className="flex items-center gap-x-4">
@@ -126,7 +160,7 @@ const CategoryTable = () => {
               </div>
             </td>
           </tr>
-        ))}
+      )))}
       </tbody>
     </table>
   );

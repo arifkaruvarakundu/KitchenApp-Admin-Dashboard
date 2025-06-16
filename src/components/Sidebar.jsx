@@ -9,7 +9,7 @@
 // *********************
 
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HiLogin,
@@ -33,6 +33,16 @@ const Sidebar = () => {
   // Commented out Redux usage; re-enable if needed
   const { isSidebarOpen } = useSelector((state) => state.dashboard);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    // Clear anything else if needed (e.g., roles, settings)
+    localStorage.clear();
+
+    navigate("/");
+  };
 
   // const isSidebarOpen = true; // Use true/false based on your app logic
 
@@ -63,7 +73,7 @@ const Sidebar = () => {
           {isLandingOpen && (
             <div>
               <NavLink
-                to="/"
+                to="/dashboard"
                 className={({ isActive }) =>
                   isActive ? navActiveClass : navInactiveClass
                 }
@@ -119,7 +129,7 @@ const Sidebar = () => {
             <HiOutlineUser className="text-xl" />
             <span className="text-lg">Users</span>
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/reviews"
             className={({ isActive }) =>
               isActive ? navActiveClass : navInactiveClass
@@ -127,7 +137,7 @@ const Sidebar = () => {
           >
             <HiOutlineStar className="text-xl" />
             <span className="text-lg">Reviews</span>
-          </NavLink>
+          </NavLink> */}
 
           <div
             onClick={() => setIsAuthOpen(!isAuthOpen)}
@@ -139,13 +149,14 @@ const Sidebar = () => {
           {isAuthOpen && (
             <div>
               <NavLink
-                to="/login"
+                to="/"
+                onClick={logout}
                 className={({ isActive }) =>
                   isActive ? navActiveClass : navInactiveClass
                 }
               >
                 <HiLogin className="text-xl" />
-                <span className="text-lg">Login</span>
+                <span className="text-lg">LogOut</span>
               </NavLink>
               <NavLink
                 to="/register"

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { HiOutlinePencil, HiOutlineTrash, HiOutlineEye } from "react-icons/hi";
 import API_BASE_URL from "../../api_config";
 import { getCloudinaryUrl } from '../utils/cloudinary';
+import {toast} from "react-toastify"
 
 const inStockClass =
   "text-green-400 bg-green-400/10 flex-none rounded-full p-1";
@@ -13,6 +14,7 @@ const outOfStockClass =
 
 const ProductTable = ({ searchQuery, sortOption, rowsPerPage, currentPage, setTotalItems }) => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true)
 
     const confirmDelete = async (productId) => {
       if (window.confirm("Are you sure you want to delete this product?")) {
@@ -22,8 +24,13 @@ const ProductTable = ({ searchQuery, sortOption, rowsPerPage, currentPage, setTo
 
     const handleDeleteProduct = async (productId) => {
       try {
-        await axios.delete(`${API_BASE_URL}/deleteproduct/${productId}/`);
-        alert("Product deleted successfully!");
+        setLoading(true)
+        const token = localStorage.getItem("token")
+        await axios.delete(`${API_BASE_URL}/deleteproduct/${productId}/`,{
+          headers:{
+          "Authorization": `Bearer ${token}`
+        }});
+        toast.success("Product deleted successfully!");
 
         // ❗ Remove the deleted product from the state
         setProducts((prevProducts) =>
@@ -35,8 +42,10 @@ const ProductTable = ({ searchQuery, sortOption, rowsPerPage, currentPage, setTo
         return true;
       } catch (err) {
         console.error("Failed to delete product", err);
-        alert("Failed to delete product");
+        toast.error("Failed to delete product");
         return false;
+      }finally{
+        setLoading(false)
       }
     };
 

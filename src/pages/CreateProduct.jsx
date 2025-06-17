@@ -10,13 +10,15 @@ import { useEffect, useState } from "react";
 import API_BASE_URL from "../../api_config";
 // import { selectList, stockStatusList } from "../utils/data";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 import ProductVariants from "../components/ProductVariantAdd";
+
 
 const CreateProduct = () => {
     const [categories, setCategories] = useState([]);
     const [image, setImage] = useState(null);
     const [variants, setVariants] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [productData, setProductData] = useState({
     product_name_en: "",
     product_name_ar: "",
@@ -60,16 +62,20 @@ const CreateProduct = () => {
       setVariants(updated);
     };
 
-    const handleSubmit = async () => {
-      const formData = new FormData();
+  const handleSubmit = async () => {
+    const formData = new FormData();
 
-      // Add basic product data
-      for (let key in productData) {
+    // Add basic product data
+    for (let key in productData) {
+      if (key === "category" && productData[key]) {
+        formData.append(key, String(productData[key])); // Ensure it's a string ID
+      } else if (productData[key]) {
         formData.append(key, productData[key]);
       }
+    }
 
-      // Add each variant
-      variants.forEach((variant, index) => {
+    // Add each variant
+    variants.forEach((variant, index) => {
       formData.append(`variants[${index}][color_en]`, variant.color_en);
       formData.append(`variants[${index}][color_ar]`, variant.color_ar);
       formData.append(`variants[${index}][price]`, variant.price);
@@ -94,22 +100,27 @@ const CreateProduct = () => {
       });
     });
 
-      try {
-        const response = await axios.post(`${API_BASE_URL}/addproduct/`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+    try {
+      setLoading(true);
+      console.log("category in formData", productData.category);
+      const token = localStorage.getItem("token")
+      const response = await axios.post(`${API_BASE_URL}/addproduct/`, formData, {
+        headers: {
+          "Content-Type" : "multipart/form-data",
+          "Authorization" : `Bearer ${token}`
+        },
+      });
 
-        alert("Product created successfully!");
-        navigate("/products"); // ✅ Corrected: lowercase 'n' in navigate
-        
-        console.log("Product created successfully", response.data);
-        // Optionally reset form or redirect
-      } catch (err) {
-        console.error("Error creating product", err);
-      }
-    };
+      toast.success("Product created successfully!");
+      navigate("/products"); // ✅ Corrected: lowercase 'n' in navigate
+      // Optionally reset form or redirect
+    } catch (err) {
+      console.error("Error creating product", err);
+      toast.error("Failed to create product:");
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -133,11 +144,20 @@ const CreateProduct = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            className="dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-black duration-200 flex items-center justify-center gap-x-2"
+            disabled={loading}
+            className={`dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg flex items-center justify-center gap-x-2 ${
+              loading
+                ? "opacity-50 cursor-not-allowed"
+                : "dark:hover:bg-white hover:bg-black duration-200"
+            }`}
           >
-            <HiOutlineSave className="dark:text-blackPrimary text-whiteSecondary text-xl" />
+            {loading ? (
+              <span className="animate-spin border-2 border-whiteSecondary border-t-transparent rounded-full w-5 h-5" />
+            ) : (
+              <HiOutlineSave className="dark:text-blackPrimary text-whiteSecondary text-xl" />
+            )}
             <span className="dark:text-blackPrimary text-whiteSecondary font-semibold">
-              Publish product
+              {loading ? "Publishing..." : "Publish product"}
             </span>
           </button>
         </div>
@@ -218,11 +238,16 @@ const CreateProduct = () => {
 
             <InputWithLabel label="Category">
               <SelectInput
-                selectList={categories}
+                selectList={[
+                  { id: "", name: "Select Category" }, // 👈 Placeholder
+                  ...categories,
+                ]}
                 value={productData.category}
-                onChange={(e) =>
-                  setProductData({ ...productData, category: e.target.value })
-                }
+                onChange={(e) => {
+                  console.log("Select change event:", e);
+                  console.log("Selected value:", e.target.value);
+                  setProductData({ ...productData, category: e.target.value });
+                }}
               />
             </InputWithLabel>
 

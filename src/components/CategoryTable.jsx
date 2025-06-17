@@ -13,11 +13,14 @@ import { Link } from "react-router-dom";
 import { HiOutlinePencil, HiOutlineTrash, HiOutlineEye } from "react-icons/hi";
 import axios from 'axios';
 import API_BASE_URL from "../../api_config";
+import {toast} from "react-toastify";
 // import { getCloudinaryUrl } from '../utils/cloudinary';
 
 const CategoryTable = ({searchQuery, sortOption, rowsPerPage, currentPage, setTotalItems}) => {
 
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
       axios
         .get(`${API_BASE_URL}/categories/`)
@@ -34,15 +37,23 @@ const CategoryTable = ({searchQuery, sortOption, rowsPerPage, currentPage, setTo
         if (!window.confirm("Are you sure you want to delete this category?")) return;
 
         try {
-          const response = await axios.delete(`${API_BASE_URL}/deletecategory/${categoryId}/`);
-          alert("Category deleted successfully.");
+          setLoading(true)
+          const token = localStorage.getItem("token")
+          const response = await axios.delete(`${API_BASE_URL}/deletecategory/${categoryId}/`,{
+            headers:{
+              "Authorization": `Bearer ${token}`
+            }
+          });
+          toast.success("Category deleted successfully.");
           // ❗ Remove the deleted category from the state
         setCategories((prevCategories) =>
           prevCategories.filter((category) => category.id !== categoryId)
         );
           // Optionally refresh the list or redirect
         } catch (error) {
-          alert(error.response?.data?.detail || "Failed to delete category.");
+          toast.error(error.response?.data?.detail || "Failed to delete category.");
+        } finally{
+          setLoading(false)
         }
       };
 

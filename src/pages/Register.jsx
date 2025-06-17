@@ -137,7 +137,7 @@ const RegisterAdmin = () => {
 
         <button
           type="submit"
-          className="w-full bg-blackPrimary text-white py-2 rounded hover:bg-black hover:shadow-md"
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-900 hover:shadow-md"
         >
           Register Admin
         </button>

@@ -11,6 +11,7 @@ import API_BASE_URL from "../../api_config";
 // import { selectList, stockStatusList } from "../utils/data";
 import { useNavigate } from "react-router-dom";
 import EditProductVariants from "../components/Edit_productvariant_add";
+import { toast } from "react-toastify";
 
 const EditProduct = () => {
     const { id } = useParams(); // Get the product ID from the URL
@@ -194,17 +195,23 @@ const EditProduct = () => {
       });
 
       try {
+        setLoading(true);
+        const token = localStorage.getItem("token")
         const response = await axios.put(`${API_BASE_URL}/editproduct/${id}/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${token}`
           },
         });
 
-        alert("Product updated successfully!");
+        toast.success("Product updated successfully!");
         navigate("/products");
         console.log("Product updated successfully", response.data);
       } catch (err) {
         console.error("Error updating product", err.response?.data || err);
+        toast.error("Failed to update product:");
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -221,20 +228,30 @@ const EditProduct = () => {
           </h2>
         </div>
         <div className="flex gap-x-2 max-[370px]:flex-col max-[370px]:gap-2 max-[370px]:items-center">
-          <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
+          {/* <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
             <AiOutlineSave className="dark:text-whiteSecondary text-blackPrimary text-xl" />
             <span className="dark:text-whiteSecondary text-blackPrimary font-medium">
               Save draft
             </span>
-          </button>
+          </button> */}
           <button
             type="button"
             onClick={handleSubmit}
-            className="dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-black duration-200 flex items-center justify-center gap-x-2"
-          >
+            disabled={loading}
+            className={`dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-black duration-200 flex items-center justify-center gap-x-2 ${
+              loading
+                ? "opacity-50 cursor-not-allowed"
+                : "dark:hover:bg-white hover:bg-black duration-200"
+            }`}
+              >
+                {loading ? (
+                  <span className="animate-spin border-2 border-whiteSecondary border-t-transparent rounded-full w-5 h-5" />
+                ):(
             <HiOutlineSave className="dark:text-blackPrimary text-whiteSecondary text-xl" />
+                )}
             <span className="dark:text-blackPrimary text-whiteSecondary font-semibold">
-              Edit Product
+              {loading ? "Editing..." : "Edit product"}
+              
             </span>
           </button>
         </div>

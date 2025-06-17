@@ -10,8 +10,13 @@ const UserTable = ({searchQuery, sortOption, rowsPerPage, currentPage, setTotalI
      const [users, setUsers] = useState([]);
 
     useEffect(() => {
+      const token = localStorage.getItem("token")
     axios
-      .get(`${API_BASE_URL}/users/`)
+      .get(`${API_BASE_URL}/users/`,{
+        headers:{
+          "Authorization": `Bearer ${token}`
+        }
+      })
       .then((response) => {
         console.log("Users data fetched successfully:", response.data);
         setUsers(response.data);
@@ -25,7 +30,12 @@ const UserTable = ({searchQuery, sortOption, rowsPerPage, currentPage, setTotalI
       if (!window.confirm("Are you sure you want to delete this user?")) return;
 
       try {
-        await axios.delete(`${API_BASE_URL}/delete_user/${id}/`);
+        const token = localStorage.getItem("token")
+        await axios.delete(`${API_BASE_URL}/delete_user/${id}/`,{
+          headers:{
+            "Authorization": `Bearer ${token}`
+          }
+        });
         alert("User deleted successfully");
         // Refresh the users list after deletion
         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));

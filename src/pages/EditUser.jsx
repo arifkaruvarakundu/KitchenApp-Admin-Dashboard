@@ -30,7 +30,12 @@ const EditUser = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/admin_userdetails/${id}`);
+        const token = localStorage.getItem("token")
+        const response = await axios.get(`${API_BASE_URL}/admin_userdetails/${id}`,{
+          headers:{
+            "Authorization": `Bearer ${token}`
+          }
+        });
         console.log("User data fetched successfully:", response.data);
         setUserData(response.data);
       } catch (error) {
@@ -53,12 +58,14 @@ const EditUser = () => {
     }
 
     try {
+        const token = localStorage.getItem("token")
         const response = await axios.patch(
         `${API_BASE_URL}/edit_user/${id}/`,
         formData,
         {
             headers: {
             "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${token}`
             },
         }
         );

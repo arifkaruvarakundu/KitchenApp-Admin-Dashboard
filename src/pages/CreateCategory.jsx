@@ -14,9 +14,11 @@ import { AiOutlineSave } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../../api_config";
+import {toast} from "react-toastify"; 
 
 const CreateCategory = () => {
 
+    const [loading, setLoading] = useState(false)
     const [categoryData, setCategoryData] = useState({
       category_name: "",
       category_name_ar: "",
@@ -38,14 +40,17 @@ const handleSubmit = async (e) => {
   }
 
   try {
+    setLoading(true)
+    const token = localStorage.getItem("token")
     const response = await axios.post(`${API_BASE_URL}/addcategory/`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        "Authorization": `Bearer ${token}`
       },
     });
 
     if (response.status === 201) {
-      alert("Category created successfully!");
+      toast.success("Category created successfully!");
       navigate("/categories"); // Navigate to categories page after successful creation
       // Reset form or navigate
       setCategoryData({
@@ -58,10 +63,12 @@ const handleSubmit = async (e) => {
 
   } catch (error) {
     if (error.response) {
-      alert(`Error: ${error.response.data.detail}`);
+      toast.error(`Error: ${error.response.data.detail}`);
     } else {
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
+  }finally{
+    setLoading(false)
   }
 };
 
@@ -78,20 +85,29 @@ const handleSubmit = async (e) => {
               </h2>
             </div>
             <div className="flex gap-x-2 max-[370px]:flex-col max-[370px]:gap-2 max-[370px]:items-center">
-              <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
+              {/* <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
                 <AiOutlineSave className="dark:text-whiteSecondary text-blackPrimary text-xl" />
                 <span className="dark:text-whiteSecondary text-blackPrimary font-medium">
                   Save draft
                 </span>
-              </button>
+              </button> */}
               <button
+                type="button"
                 onClick={handleSubmit}
-                
-                className="dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-black duration-200 flex items-center justify-center gap-x-2"
+                disabled={loading}
+                className={`dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg flex items-center justify-center gap-x-2 ${
+                  loading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "dark:hover:bg-white hover:bg-black duration-200"
+                }`}
               >
-                <HiOutlineSave className="dark:hover:text-blackPrimary hover:text-whiteSecondary dark:text-blackPrimary text-whiteSecondary text-xl" />
+                {loading ? (
+                  <span className="animate-spin border-2 border-whiteSecondary border-t-transparent rounded-full w-5 h-5" />
+                ) : (
+                  <HiOutlineSave className="dark:text-blackPrimary text-whiteSecondary text-xl" />
+                )}
                 <span className="dark:text-blackPrimary text-whiteSecondary font-semibold">
-                  Publish category
+                  {loading ? "Publishing..." : "Publish category"}
                 </span>
               </button>
             </div>

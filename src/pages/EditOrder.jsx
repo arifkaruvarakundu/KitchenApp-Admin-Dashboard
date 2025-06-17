@@ -12,10 +12,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../../api_config";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EditOrder = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const[loading, setLoading] = useState(false)
   const [ orderData, setOrderData ] = useState({
     id: "",
     status: "",
@@ -26,8 +28,13 @@ const EditOrder = () => {
 
   useEffect(() => {
     // Fetch order data from API or state management
+    const token = localStorage.getItem("token")
     const fetchOrderData = async () => {
-      const response = await axios.get(`${API_BASE_URL}/admin_order_details/${id}/`);
+      const response = await axios.get(`${API_BASE_URL}/admin_order_details/${id}/`,{
+        headers:{
+          "Authorization": `Bearer ${token}`
+        }
+      });
         console.log("Fetched order data:", response.data);
       setOrderData(response.data);
     };
@@ -37,21 +44,29 @@ const EditOrder = () => {
 
     const handleSubmit = async () => {
         try {
+            setLoading(true)
             const payload = {
             status: orderData.status,
             };
+            const token = localStorage.getItem("token")
 
             const response = await axios.patch(
             `${API_BASE_URL}/edit_order/${id}/`,
-            payload
+            payload,{
+              headers:{
+                "Authorization": `Bearer ${token}`
+              }
+            }
             );
 
-            alert("Order updated successfully.");
+            toast.success("Order updated successfully.");
             console.log("Updated order response:", response.data);
             navigate("/orders"); // or any success route
         } catch (error) {
             console.error("Failed to update order:", error);
-            alert("Failed to update order.");
+            toast.error("Failed to update order.");
+        } finally{
+          setLoading(false)
         }
         };
 

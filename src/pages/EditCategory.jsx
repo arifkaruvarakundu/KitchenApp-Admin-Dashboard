@@ -13,9 +13,11 @@ import { AiOutlineSave } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import API_BASE_URL from "../../api_config";
+import {toast} from "react-toastify"
 
 const EditCategory = () => {
    const [selectedImage, setSelectedImage] = useState(null); // for preview
+   const [loading, setLoading] = useState(true)
    const navigate = useNavigate();
 
    const [categoryData, setCategoryData] = useState({
@@ -41,6 +43,8 @@ const EditCategory = () => {
       });
     } catch (error) {
       console.error("Error fetching category details:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -56,16 +60,22 @@ const handleSubmit = async () => {
     }
 
     try {
+      setLoading(true)
+      const token = localStorage.getItem("token")
+
       await axios.put(`${API_BASE_URL}/editcategory/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`
         },
       });
-      alert("Category updated successfully!");
+      toast.success("Category updated successfully!");
       navigate("/categories"); // redirect after success
     } catch (error) {
       console.error("Failed to update category:", error);
-      alert("Failed to update category.");
+      toast.error("Failed to update category.");
+    } finally{
+      setLoading(false)
     }
   };
 
@@ -88,12 +98,22 @@ const handleSubmit = async () => {
                 </span>
               </button> */}
               <button
+                type="button"
                 onClick={handleSubmit}
-                className="dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-blackSecondary duration-200 flex items-center justify-center gap-x-2"
-              >
+                disabled ={loading}
+                className={`dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-blackSecondary duration-200 flex items-center justify-center gap-x-2 ${
+                  loading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "dark:hover:bg-white hover:bg-black duration-200"
+                }`}
+                  >
+                    {loading ? (
+                  <span className="animate-spin border-2 border-whiteSecondary border-t-transparent rounded-full w-5 h-5" />
+                ):(
                 <HiOutlineSave className="dark:text-blackPrimary text-whiteSecondary text-xl" />
+                )}
                 <span className="dark:text-blackPrimary text-whiteSecondary font-semibold">
-                  Update category
+                  {loading ? "Editing..." : "Edit Category"}
                 </span>
               </button>
             </div>

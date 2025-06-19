@@ -124,7 +124,7 @@ const CreateProduct = () => {
 
 
   return (
-    <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
+    <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-emerald-50 text-stone-700">
   <Sidebar />
   <div className="hover:bg-blackPrimary bg-whiteSecondary w-full ">
     <div className="dark:bg-blackPrimary bg-whiteSecondary py-10">
@@ -135,12 +135,12 @@ const CreateProduct = () => {
           </h2>
         </div>
         <div className="flex gap-x-2 max-[370px]:flex-col max-[370px]:gap-2 max-[370px]:items-center">
-          <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
+          {/* <button className="dark:bg-blackPrimary bg-whiteSecondary border border-gray-600 w-48 py-2 text-lg dark:hover:border-gray-500 hover:border-gray-400 duration-200 flex items-center justify-center gap-x-2">
             <AiOutlineSave className="dark:text-whiteSecondary text-blackPrimary text-xl" />
             <span className="dark:text-whiteSecondary text-blackPrimary font-medium">
               Save draft
             </span>
-          </button>
+          </button> */}
           <button
             type="button"
             onClick={handleSubmit}

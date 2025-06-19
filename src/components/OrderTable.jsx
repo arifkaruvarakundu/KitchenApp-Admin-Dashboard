@@ -22,7 +22,9 @@ const OrderTable = ({ statusFilter, sortOption, rowsPerPage, currentPage, setTot
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
+
       const token = localStorage.getItem("token");
+
       axios
         .get(`${API_BASE_URL}/orders/`,{
           headers:{
@@ -38,6 +40,30 @@ const OrderTable = ({ statusFilter, sortOption, rowsPerPage, currentPage, setTot
           console.error("Error fetching product data:", error);
         });
     }, []);
+
+    const handleDownload = async (orderId) => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(`${API_BASE_URL}/invoice/download/${orderId}/`, {
+          responseType: 'blob',
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `invoice_${orderId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.error("Error downloading invoice:", error);
+        alert("Failed to download invoice.");
+      }
+    };
 
     const deleteOrder = async (orderId) => {
         if (!window.confirm("Are you sure you want to delete this order?")) return;
@@ -168,8 +194,12 @@ useEffect(() => {
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
               <div className="flex items-center gap-x-4">
                 <button
-                  // onClick={handleDownload}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-200"
+                  onClick={() => handleDownload(item.id)}
+                  disabled={["Pending", "Cancelled"].includes(item.status)}
+                  className={`px-4 py-2 text-sm font-medium rounded transition duration-200
+                    ${["Pending", "Cancelled"].includes(item.status)
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"}`}
                 >
                   Download
                 </button>
@@ -180,19 +210,19 @@ useEffect(() => {
                 <div
                   className={`text-sm leading-6 py-1 px-2 ${
                     item.status === "Order Confirmed" &&
-                    "dark:bg-green-900 bg-green-700 text-whiteSecondary font-semibold"
+                    "dark:bg-green-900 bg-green-700 text-white font-semibold"
                   } ${
                     item.status === "Out for Delivery" &&
-                    "dark:bg-yellow-900 bg-yellow-700 text-whiteSecondary font-semibold"
+                    "dark:bg-yellow-900 bg-yellow-700 text-white font-semibold"
                   } ${
                     item.status === "Cancelled" &&
-                    "dark:bg-red-900 bg-red-700 text-whiteSecondary font-semibold"
+                    "dark:bg-red-900 bg-red-700 text-white font-semibold"
                   } ${
                     item.status === "Delivered" &&
-                    "dark:bg-gray-900 bg-gray-700 text-whiteSecondary font-semibold"
+                    "dark:bg-gray-900 bg-gray-700 text-white font-semibold"
                   } ${
                     item.status === "Pending" &&
-                    "dark:bg-blue-900 bg-blue-700 text-whiteSecondary font-semibold"
+                    "dark:bg-blue-900 bg-blue-700 text-white font-semibold"
                   }`}
                 >
                   {item.status}
@@ -228,7 +258,7 @@ useEffect(() => {
                   onClick={() => deleteOrder(item.id)}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
                 >
-                  <HiOutlineTrash className="text-lg" />
+                  <HiOutlineTrash className="text-lg text-red-600" />
                 </button>
               </div>
             </td>

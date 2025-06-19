@@ -20,7 +20,7 @@ const Orders = () => {
     }, [rowsPerPage]);
 
   return (
-   <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
+   <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-emerald-50 text-stone-700">
   <Sidebar />
   <div className="dark:bg-blackPrimary bg-whiteSecondary w-full">
     <div className="dark:bg-blackPrimary bg-whiteSecondary py-10">
@@ -99,6 +99,7 @@ const Orders = () => {
         sortOption={sortOption}
         rowsPerPage={rowsPerPage}
         currentPage={currentPage}
+        totalItems={totalItems}
         setTotalItems={setTotalItems} 
       />
 
@@ -112,7 +113,7 @@ const Orders = () => {
         <Pagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          setTotalItems={setTotalItems}
+          totalItems={totalItems}
           rowsPerPage={rowsPerPage}
         />
       </div>

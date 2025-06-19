@@ -176,7 +176,7 @@ useEffect(() => {
                   onClick={() => confirmDelete(item.id)}
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
-                  <HiOutlineTrash className="text-lg" />
+                  <HiOutlineTrash className="text-lg text-red-600" />
                 </button>
               </div>
             </td>

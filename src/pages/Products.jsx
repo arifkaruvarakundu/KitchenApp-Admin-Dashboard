@@ -27,7 +27,7 @@ const Products = () => {
 
 
   return (
-    <div className="h-auto border-t dark:border-blackSecondary border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
+    <div className="h-auto border-t dark:border-blackSecondary border-blackSecondary border-1 flex dark:bg-blackPrimary bg-emerald-50 text-stone-700">
       <Sidebar />
       <div className="dark:bg-blackPrimary bg-whiteSecondary w-full ">
         <div className="dark:bg-blackPrimary bg-whiteSecondary py-10">
@@ -92,7 +92,7 @@ const Products = () => {
             <Pagination
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              setTotalItems={setTotalItems}
+              totalItems={totalItems}
               rowsPerPage={rowsPerPage}
             />
           </div>

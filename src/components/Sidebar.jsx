@@ -56,7 +56,8 @@ const Sidebar = () => {
   return (
     <div className="relative">
       <div
-        className={`w-72 h-[100vh] dark:bg-blackPrimary bg-whiteSecondary pt-6 xl:sticky xl:top-0 xl:z-10 max-xl:fixed max-xl:top-0 max-xl:z-10 xl:translate-x-0 ${sidebarClass}`}
+          className={`w-72 h-[100vh] dark:bg-blackPrimary bg-amber-100 pt-6 xl:sticky xl:top-0 xl:z-10 max-xl:fixed max-xl:top-0 max-xl:z-10 xl:translate-x-0 ${sidebarClass} shadow-lg rounded-tr-3xl rounded-br-3xl`}
+
       >
         <HiOutlineX
           className="dark:text-whiteSecondary text-blackPrimary text-2xl ml-auto mb-2 mr-2 cursor-pointer xl:py-3"
@@ -81,7 +82,7 @@ const Sidebar = () => {
                 <HiOutlineHome className="text-xl" />
                 <span className="text-lg">Overview v1</span>
               </NavLink>
-              <NavLink
+              {/* <NavLink
                 to="/landing-v2"
                 className={({ isActive }) =>
                   isActive ? navActiveClass : navInactiveClass
@@ -89,7 +90,7 @@ const Sidebar = () => {
               >
                 <HiOutlineHome className="text-xl" />
                 <span className="text-lg">Overview v2</span>
-              </NavLink>
+              </NavLink> */}
             </div>
           )}
 

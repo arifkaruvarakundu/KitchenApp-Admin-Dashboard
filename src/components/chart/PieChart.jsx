@@ -7,15 +7,21 @@ ChartJS.register(Tooltip, Legend, ArcElement);
 const PieChart = () => {
   const darkMode = useSelector((state) => state.darkMode.darkMode);
 
-  if (darkMode) {
-    ChartJS.defaults.color = "#fff";
-    ChartJS.defaults.backgroundColor = "#fff";
-    ChartJS.defaults.borderColor = "#fff";
-  } else {
-    ChartJS.defaults.color = "#000";
-    ChartJS.defaults.backgroundColor = "#000";
-    ChartJS.defaults.borderColor = "#000";
-  }
+  const lightColors = [
+    "rgba(54, 162, 235, 0.8)",
+    "rgba(255, 206, 86, 0.8)",
+    "rgba(75, 192, 192, 0.8)",
+    "rgba(255, 99, 132, 0.8)",
+    "rgba(153, 102, 255, 0.8)",
+  ];
+
+  const darkColors = [
+    "rgba(255, 255, 255, 0.9)",
+    "rgba(200, 200, 200, 0.8)",
+    "rgba(160, 160, 160, 0.7)",
+    "rgba(120, 120, 120, 0.6)",
+    "rgba(80, 80, 80, 0.5)",
+  ];
 
   const options = {
     responsive: true,
@@ -35,21 +41,7 @@ const PieChart = () => {
       {
         label: "Time Spent",
         data: [120, 60, 30, 90, 45],
-        backgroundColor: darkMode
-          ? [
-              "rgba(255,255,255, 1)",
-              "rgba(255,255,255, 0.8)",
-              "rgba(255,255,255, 0.6)",
-              "rgba(255,255,255, 0.4)",
-              "rgba(255,255,255, 0.2)",
-            ]
-          : [
-              "rgba(0,0,0, 1)",
-              "rgba(0,0,0, 0.8)",
-              "rgba(0,0,0, 0.6)",
-              "rgba(0,0,0, 0.4)",
-              "rgba(0,0,0, 0.2)",
-            ],
+        backgroundColor: darkMode ? darkColors : lightColors,
         hoverOffset: 4,
       },
     ],

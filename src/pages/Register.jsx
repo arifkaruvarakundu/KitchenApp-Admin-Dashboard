@@ -64,7 +64,7 @@ const RegisterAdmin = () => {
 };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-emerald-50 text-stone-700">
       <form
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded px-8 pt-6 pb-8 w-full max-w-md"
